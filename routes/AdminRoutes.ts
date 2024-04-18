@@ -9,10 +9,10 @@ router.get('/',(req:Request,res:Response,next:NextFunction)=>{
     })
 })
 
-router.post('/vendor',CreateVendor)
+router.post('/vandor',CreateVendor)
 
-router.get('/vendors', GetVandors)
+router.get('/vandors', GetVandors)
 
-router.get('/vendors/:id', GetVandorsByID)
+router.get('/vandors/:id', GetVandorsByID)
 
 export {router as AdminRoute};

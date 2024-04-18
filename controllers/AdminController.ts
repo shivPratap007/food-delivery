@@ -18,15 +18,15 @@ export const CreateVendor = async (
     phone,
   } = <CreateVendorInput>req.body;
 
-  const existingVendor=await vandor.find({email:email});
+  const existingVendor = await vandor.find({ email: email });
   console.log(existingVendor);
-  if(existingVendor.length!=0){
+  if (existingVendor.length != 0) {
     return res.json({
-        message:"This email is already registered with a vendor",
-    })
+      message: "This email is already registered with a vendor",
+    });
   }
 
-  const createVandor=await vandor.create({
+  const createVandor = await vandor.create({
     name,
     address,
     pincode,
@@ -35,21 +35,36 @@ export const CreateVendor = async (
     password,
     ownerName,
     phone,
-    salt:"yo yo",
-    rating:0,
-    serviceAvailable:false,
-    coverImage:[],
-  })
+    salt: "yo yo",
+    rating: 0,
+    serviceAvailable: false,
+    coverImage: [],
+  });
 
   return res.json({
-    createVandor
+    createVandor,
   });
 };
 export const GetVandors = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    const allVendors = await vandor.find({});
+    if (allVendors.length==0) {
+      return res.json({ status: false, message: "Vandors data not found" });
+    }
+    return res.json(allVendors);
+
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      status: false,
+      message: error,
+    });
+  }
+};
 export const GetVandorsByID = async (
   req: Request,
   res: Response,
