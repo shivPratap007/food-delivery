@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/admin", AdminRoute);
-app.use("/vendor", VendorRoute);
+app.use("/vandor", VendorRoute);
 
 app.listen(8000, async () => {
   console.log("App is running on port 8000");
