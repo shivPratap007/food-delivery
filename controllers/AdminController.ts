@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { CreateVendorInput } from "../dto";
+import { NewRequest } from "../config/RequestConfig";
 import { vandor } from "../models";
+import { CreateVandorInput } from "../dto";
 
-export const CreateVendor = async (
+export const CreateVandor = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -16,12 +17,12 @@ export const CreateVendor = async (
     password,
     ownerName,
     phone,
-  } = <CreateVendorInput>req.body;
+  } = <CreateVandorInput>req.body;
 
-  const existingVendor = await vandor.find({ email: email });
-  if (existingVendor.length != 0) {
+  const existingVandor = await vandor.find({ email: email });
+  if (existingVandor.length != 0) {
     return res.json({
-      message: "This email is already registered with a vendor",
+      message: "This email is already registered with a vandor",
     });
   }
 
@@ -50,11 +51,11 @@ export const GetVandors = async (
   next: NextFunction
 ) => {
   try {
-    const allVendors = await vandor.find({});
-    if (allVendors.length == 0) {
+    const allVandors = await vandor.find({});
+    if (allVandors.length == 0) {
       return res.json({ status: false, message: "Vandors data not found" });
     }
-    return res.json(allVendors);
+    return res.json(allVandors);
   } catch (error) {
     console.log(error);
     return res.json({

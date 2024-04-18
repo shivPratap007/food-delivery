@@ -1,15 +1,17 @@
 import express, {Request, Response, NextFunction} from "express";
-import { CreateVendor, GetVandors, GetVandorsByID } from "../controllers";
+import { CreateVandor, GetVandors, GetVandorsByID } from "../controllers";
+import { NewRequest } from "../config/RequestConfig";
+
 
 const router=express.Router();
 
-router.get('/',(req:Request,res:Response,next:NextFunction)=>{
+router.get('/',(req:NewRequest,res:Response,next:NextFunction)=>{
     return res.json({
         message:"Hello from ADMIN"
     })
 })
 
-router.post('/vandor',CreateVendor)
+router.post('/vandor',CreateVandor)
 
 router.get('/vandors', GetVandors)
 

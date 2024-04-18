@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 async function GenerateHassedPassword(password:string,salt:string){
   return await bcrypt.hash(password,salt);
 }
@@ -21,3 +23,5 @@ export async function PasswordUtility(instance: any, next: any) {
 export async function ValidatePassword(givenPassword:string, savedPassword:string, salt:string){
   return await GenerateHassedPassword(givenPassword,salt)===savedPassword;
 }
+
+
