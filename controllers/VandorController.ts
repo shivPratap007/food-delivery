@@ -156,8 +156,8 @@ export const AddFood = async (
     >req.body;
     const vandor = await vandorModel.findById(user);
     if (vandor != null) {
-      const files=req.files as [Express.Multer.File];
-      const images=files.map((file:Express.Multer.File)=> file.filename)
+      const files = req.files as [Express.Multer.File];
+      const images = files.map((file: Express.Multer.File) => file.filename);
       const createdFood = await Food.create({
         vandorId: vandor._id,
         name: name,
@@ -188,22 +188,49 @@ export const GetFoods = async (
   next: NextFunction
 ) => {
   try {
-    const loggedInUserId=req.user;
-    const allFoodsOfLoginUser=await Food.find({vandorId:loggedInUserId});
-    if(!allFoodsOfLoginUser){
+    const loggedInUserId = req.user;
+    const allFoodsOfLoginUser = await Food.find({ vandorId: loggedInUserId });
+    if (!allFoodsOfLoginUser) {
       return res.json({
-        status:false,
-        message:"No food is available under this vendor",
-      })
+        status: false,
+        message: "No food is available under this vendor",
+      });
     }
     return res.json({
       allFoodsOfLoginUser,
-    })
+    });
   } catch (error: any) {
     console.log(error);
     return res.json({
       status: false,
       error: error.message,
     });
+  }
+};
+
+export const updateVendorCoverImage =async (
+  req: NewRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try{
+    const userId=req.user;
+    if(userId){
+      const vandor=await vandorModel.findById(userId);
+      if(vandor!=null){
+        const files=req.files as [Express.Multer.File];
+        const images=files.map((file:Express.Multer.File)=>file.filename);
+        vandor.coverImage.push(...images);
+        const result=await vandor.save();
+        return res.json(result);
+      }
+    }
+  }
+  catch(error:any){
+    console.log(error)
+    return res.json({
+      status:false,
+      message:error.message
+    })
   }
 };

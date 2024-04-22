@@ -6,6 +6,7 @@ import {
   UpdateVandorProfile,
   UpdateVandorService,
   VandorLogin,
+  updateVendorCoverImage,
 } from "../controllers";
 import { NewRequest } from "../config/RequestConfig";
 import { Authenticate } from "../middlewares/CommonAuth";
@@ -18,7 +19,7 @@ const imageStore = multer.diskStorage({
     cb(null, "./images");
   },
   filename: function (req, file, cb) {
-    const currentDate = new Date().toISOString().slice(0, 10); 
+    const currentDate = new Date().toISOString().slice(0, 10);
     cb(null, currentDate + "_" + file.originalname);
   },
 });
@@ -42,5 +43,7 @@ router.patch("/service", Authenticate, UpdateVandorService);
 router.post("/food", Authenticate, images, AddFood);
 
 router.get("/foods", Authenticate, GetFoods);
+
+router.patch("/coverimage", Authenticate, images, updateVendorCoverImage);
 
 export { router as VandorRoute };
