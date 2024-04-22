@@ -1,5 +1,5 @@
 import express, {Request, Response, NextFunction} from "express";
-import { GetVandorProfile, UpdateVandorProfile, UpdateVandorService, VandorLogin } from "../controllers";
+import { AddFood, GetFoods, GetVandorProfile, UpdateVandorProfile, UpdateVandorService, VandorLogin } from "../controllers";
 import { NewRequest } from "../config/RequestConfig";
 import { Authenticate } from "../middlewares/CommonAuth";
 
@@ -19,5 +19,9 @@ router.get('/profile' ,Authenticate,GetVandorProfile)
 router.patch('/profile',Authenticate,UpdateVandorProfile)
 
 router.patch('/service',Authenticate,UpdateVandorService)
+
+router.post('/food',Authenticate,AddFood);
+
+router.get("/foods", Authenticate, GetFoods);
 
 export {router as VandorRoute};
