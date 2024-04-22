@@ -1,27 +1,46 @@
-import express, {Request, Response, NextFunction} from "express";
-import { AddFood, GetFoods, GetVandorProfile, UpdateVandorProfile, UpdateVandorService, VandorLogin } from "../controllers";
+import express, { Request, Response, NextFunction } from "express";
+import {
+  AddFood,
+  GetFoods,
+  GetVandorProfile,
+  UpdateVandorProfile,
+  UpdateVandorService,
+  VandorLogin,
+} from "../controllers";
 import { NewRequest } from "../config/RequestConfig";
 import { Authenticate } from "../middlewares/CommonAuth";
+import multer from "multer";
 
+const router = express.Router();
 
-const router=express.Router();
+const imageStore = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./images");
+  },
+  filename: function (req, file, cb) {
+    const currentDate = new Date().toISOString().slice(0, 10); 
+    cb(null, currentDate + "_" + file.originalname);
+  },
+});
 
-router.get('/',(req:NewRequest,res:Response,next:NextFunction)=>{
-    return res.json({
-        message:"Hello from VENDOR"
-    })
-})
+const images = multer({ storage: imageStore }).array("images", 10);
 
-router.get('/login',VandorLogin);
+router.get("/", (req: NewRequest, res: Response, next: NextFunction) => {
+  return res.json({
+    message: "Hello from VENDOR",
+  });
+});
 
-router.get('/profile' ,Authenticate,GetVandorProfile)
+router.get("/login", VandorLogin);
 
-router.patch('/profile',Authenticate,UpdateVandorProfile)
+router.get("/profile", Authenticate, GetVandorProfile);
 
-router.patch('/service',Authenticate,UpdateVandorService)
+router.patch("/profile", Authenticate, UpdateVandorProfile);
 
-router.post('/food',Authenticate,AddFood);
+router.patch("/service", Authenticate, UpdateVandorService);
+
+router.post("/food", Authenticate, images, AddFood);
 
 router.get("/foods", Authenticate, GetFoods);
 
-export {router as VandorRoute};
+export { router as VandorRoute };

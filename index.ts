@@ -3,10 +3,12 @@ import { MONGO_DB_URL } from "./config";
 import mongoose from "mongoose";
 import { AdminRoute, VandorRoute } from "./routes";
 import { DbConnect } from "./config/dbConnect";
+import path from 'path';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/images',express.static(path.join(__dirname,'images')));
 
 app.use("/admin", AdminRoute);
 app.use("/vandor", VandorRoute);

@@ -156,13 +156,15 @@ export const AddFood = async (
     >req.body;
     const vandor = await vandorModel.findById(user);
     if (vandor != null) {
+      const files=req.files as [Express.Multer.File];
+      const images=files.map((file:Express.Multer.File)=> file.filename)
       const createdFood = await Food.create({
         vandorId: vandor._id,
         name: name,
         description: description,
         category: category,
         foodType: foodType,
-        images: ["shiv"],
+        images: images,
         readyTime: readyTime,
         price: price,
         rating: 0,
