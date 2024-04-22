@@ -4,6 +4,8 @@ import { vandor as vandorModel } from "../models";
 import { EditVandorInput, VandorLoginInputs } from "../dto";
 import { ValidatePassword } from "../utility/PasswordUtility";
 import { GenerateSignature } from "../utility/JwtUtility";
+import { CreateFoodInputs } from "../dto/Foods.dto";
+import { Food } from "../models/Foods";
 
 export const VandorLogin = async (
   req: NewRequest,
@@ -116,8 +118,8 @@ export const UpdateVandorService = async (
       const existingUser = await vandorModel.findById(user);
       if (existingUser !== null) {
         // Toggle the serviceAvailable property
-        existingUser.serviceAvailable = String(!existingUser.serviceAvailable)
-        console.log(typeof !existingUser.serviceAvailable)
+        existingUser.serviceAvailable = Boolean(!existingUser.serviceAvailable);
+        console.log(typeof !existingUser.serviceAvailable);
 
         // Save the changes
         const updatedUser = await existingUser.save();
@@ -137,6 +139,69 @@ export const UpdateVandorService = async (
     return res.json({
       status: false,
       message: error.message,
+    });
+  }
+};
+
+export const AddFood = async (
+  req: NewRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+
+    const { name, description, category, foodType, readyTime, price } = <
+      CreateFoodInputs
+    >req.body;
+    const vandor = await vandorModel.findById(user);
+    if (vandor != null) {
+      const createdFood = await Food.create({
+        vandorId: vandor._id,
+        name: name,
+        description: description,
+        category: category,
+        foodType: foodType,
+        images: ["shiv"],
+        readyTime: readyTime,
+        price: price,
+        rating: 0,
+      });
+      vandor.foods.push(createdFood);
+      const result = await vandor.save();
+      return res.json(result);
+    }
+  } catch (error: any) {
+    console.log(error);
+    return res.json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export const GetFoods = async (
+  req: NewRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const loggedInUserId=req.user;
+    const allFoodsOfLoginUser=await Food.find({vandorId:loggedInUserId});
+    if(!allFoodsOfLoginUser){
+      return res.json({
+        status:false,
+        message:"No food is available under this vendor",
+      })
+    }
+    return res.json({
+      allFoodsOfLoginUser,
+    })
+  } catch (error: any) {
+    console.log(error);
+    return res.json({
+      status: false,
+      error: error.message,
     });
   }
 };

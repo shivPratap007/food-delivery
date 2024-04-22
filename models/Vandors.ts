@@ -11,13 +11,13 @@ interface VandorDoc extends Document {
   email: string;
   password: string;
   salt: string;
-  serviceAvailable: string;
+  serviceAvailable: boolean;
   coverImage: [string];
   rating: number;
-  //   foods: any;
+  foods: any;
 }
 
-const VandorSchema = new Schema(
+const VandorSchema: Schema<VandorDoc> = new Schema(
   {
     name: { type: String, required: true },
     ownerName: { type: String, required: true },
@@ -31,24 +31,29 @@ const VandorSchema = new Schema(
     serviceAvailable: { type: Boolean, required: true },
     coverImage: { type: [String] },
     rating: { type: Number },
-    //   foods: { type: mongoose.SchemaTypes.ObjectId, ref: "food" },
+    foods: { type: [mongoose.SchemaTypes.ObjectId], ref: "food" },
   },
-  { timestamps: true,toJSON:{transform(doc,ret){
-    delete ret.password;
-    delete ret.salt;
-    delete ret.__v;
-    delete ret.createAt;
-    delete ret.updatedAt;
-  }} }
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.salt;
+        delete ret.__v;
+        delete ret.createAt;
+        delete ret.updatedAt;
+      },
+    },
+  }
 );
 
 VandorSchema.pre("save", async function (next) {
-    // If password is not modified, move to the next middleware
-    if (!this.isModified("password")) {
-      return next();
-    }
-    await PasswordUtility(this, next);
-  });
+  // If password is not modified, move to the next middleware
+  if (!this.isModified("password")) {
+    return next();
+  }
+  await PasswordUtility(this, next);
+});
 
 const vandor = mongoose.model<VandorDoc>("vandor", VandorSchema);
 
