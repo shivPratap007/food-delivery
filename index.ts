@@ -1,19 +1,23 @@
 import express from "express";
 import { MONGO_DB_URL } from "./config";
-import mongoose from "mongoose";
-import { AdminRoute, VandorRoute } from "./routes";
-import { DbConnect } from "./config/dbConnect";
-import path from 'path';
+import {PORT} from "./config/Port";
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/images',express.static(path.join(__dirname,'images')));
+// FUNCTION TO CONNECT TO DATABASE
+import { DbConnect } from "./services/Database";
 
-app.use("/admin", AdminRoute);
-app.use("/vandor", VandorRoute);
+// FUNCTION WHICH HAS THE APPLICATION CONFIG LOGIC
+import MainApp from "./services/ExpressApp";
 
-app.listen(8000, async () => {
-  console.log("App is running on port 8000");
+async function StartServer() {
+  const app = express();
+
+  await MainApp(app);
+
   await DbConnect(MONGO_DB_URL);
-});
+
+  app.listen(PORT, () => {
+    console.log(`Application is running on port ${PORT}`);
+  });
+}
+
+StartServer();
