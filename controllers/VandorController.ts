@@ -128,7 +128,7 @@ export const UpdateVandorService = async (
           updatedUser,
         });
       }
-      return res.json({ status: true, existingUser });
+      return res.json({ status: false, message: "Vandor not found" });
     } else {
       return res.json({
         status: true,
@@ -169,8 +169,10 @@ export const AddFood = async (
         price: price,
         rating: 0,
       });
+      console.log(createdFood);
       vandor.foods.push(createdFood);
       const result = await vandor.save();
+      console.log(result);
       return res.json(result);
     }
   } catch (error: any) {
@@ -208,29 +210,28 @@ export const GetFoods = async (
   }
 };
 
-export const updateVendorCoverImage =async (
+export const updateVendorCoverImage = async (
   req: NewRequest,
   res: Response,
   next: NextFunction
 ) => {
-  try{
-    const userId=req.user;
-    if(userId){
-      const vandor=await vandorModel.findById(userId);
-      if(vandor!=null){
-        const files=req.files as [Express.Multer.File];
-        const images=files.map((file:Express.Multer.File)=>file.filename);
+  try {
+    const userId = req.user;
+    if (userId) {
+      const vandor = await vandorModel.findById(userId);
+      if (vandor != null) {
+        const files = req.files as [Express.Multer.File];
+        const images = files.map((file: Express.Multer.File) => file.filename);
         vandor.coverImage.push(...images);
-        const result=await vandor.save();
-        return res.json(result);
+        const result = await vandor.save();
+        return res.json(result)
       }
     }
-  }
-  catch(error:any){
-    console.log(error)
+  } catch (error: any) {
+    console.log(error);
     return res.json({
-      status:false,
-      message:error.message
-    })
+      status: false,
+      message: error.message,
+    });
   }
 };

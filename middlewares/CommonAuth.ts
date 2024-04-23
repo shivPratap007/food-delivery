@@ -13,6 +13,7 @@ export const Authenticate = async (
 ) => {
   try {
     const validate = await ValidateSignature(req);
+   
     if (validate) {
       next();
     } else {

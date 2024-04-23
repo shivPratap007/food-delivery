@@ -31,7 +31,7 @@ const VandorSchema: Schema<VandorDoc> = new Schema(
     serviceAvailable: { type: Boolean, required: true },
     coverImage: { type: [String] },
     rating: { type: Number },
-    foods: { type: [mongoose.SchemaTypes.ObjectId], ref: "food" },
+    foods: { type: [mongoose.SchemaTypes.ObjectId], ref: "Food" },
   },
   {
     timestamps: true,

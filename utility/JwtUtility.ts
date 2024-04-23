@@ -18,7 +18,7 @@ export const ValidateSignature=async(req:NewRequest)=>{
 
     if(signature){
         const payload=jwt.verify(signature.split(' ')[1],JWT_SECRET) as AuthPayload;
-        // ERROR JUGAAD
+        // ERROR JUGAAD TO ADD USER IN REQ BU MAKING REQUEST AS NEWREQUEST
         req.user=payload
         
         return true;
